@@ -1,0 +1,13 @@
+# ML datasets
+ml/*.csv
+
+# Trained models
+backend/model/*.pkl
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment
+.env
+.venv/
