@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "640358213318",
+    "project_id": "resumeai-1621d",
+    "storage_bucket": "resumeai-1621d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640358213318:android:7f4ea73743735b2c14d9c7",
+        "android_client_info": {
+          "package_name": "com.example.mobile_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAELcF1tN8vxB33EK0jB0q6nzWthvfAFzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

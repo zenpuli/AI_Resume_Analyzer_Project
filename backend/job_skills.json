@@ -1,0 +1,178 @@
+{
+  "software engineer": [
+    "data structures",
+    "algorithms",
+    "oops",
+    "system design",
+    "problem solving",
+    "git",
+    "sql",
+    "debugging",
+    "rest api"
+  ],
+
+  "python developer": [
+    "python",
+    "data structures",
+    "algorithms",
+    "oops",
+    "flask",
+    "django",
+    "fastapi",
+    "sql",
+    "git",
+    "rest api"
+  ],
+
+  "java developer": [
+    "java",
+    "oops",
+    "data structures",
+    "algorithms",
+    "spring",
+    "spring boot",
+    "hibernate",
+    "sql",
+    "git",
+    "rest api"
+  ],
+
+  "full stack developer": [
+    "html",
+    "css",
+    "javascript",
+    "react",
+    "node.js",
+    "express",
+    "sql",
+    "rest api",
+    "git"
+  ],
+
+  "frontend developer": [
+    "html",
+    "css",
+    "javascript",
+    "react",
+    "responsive design",
+    "ui/ux",
+    "git"
+  ],
+
+  "backend developer": [
+    "python",
+    "java",
+    "node.js",
+    "django",
+    "spring boot",
+    "rest api",
+    "sql",
+    "authentication",
+    "git"
+  ],
+
+  "android developer": [
+    "java",
+    "kotlin",
+    "android studio",
+    "xml",
+    "firebase",
+    "mvvm",
+    "room database",
+    "rest api",
+    "ui/ux"
+  ],
+
+  "flutter developer": [
+    "flutter",
+    "dart",
+    "firebase",
+    "rest api",
+    "state management",
+    "ui/ux",
+    "git"
+  ],
+
+  "data analyst": [
+    "python",
+    "pandas",
+    "numpy",
+    "sql",
+    "excel",
+    "data visualization",
+    "statistics"
+  ],
+
+  "data scientist": [
+    "python",
+    "machine learning",
+    "deep learning",
+    "statistics",
+    "pandas",
+    "numpy",
+    "scikit-learn",
+    "data visualization"
+  ],
+
+  "machine learning engineer": [
+    "python",
+    "machine learning",
+    "deep learning",
+    "tensorflow",
+    "pytorch",
+    "data preprocessing",
+    "model deployment"
+  ],
+
+  "ai engineer": [
+    "machine learning",
+    "deep learning",
+    "nlp",
+    "computer vision",
+    "python",
+    "tensorflow",
+    "pytorch"
+  ],
+
+  "devops engineer": [
+    "linux",
+    "docker",
+    "kubernetes",
+    "ci/cd",
+    "cloud computing",
+    "aws",
+    "monitoring",
+    "git"
+  ],
+
+  "cloud engineer": [
+    "cloud computing",
+    "aws",
+    "azure",
+    "gcp",
+    "docker",
+    "kubernetes",
+    "linux",
+    "networking"
+  ],
+
+  "database administrator": [
+    "sql",
+    "mysql",
+    "postgresql",
+    "mongodb",
+    "indexing",
+    "backup",
+    "replication",
+    "performance tuning"
+  ],
+
+  "cybersecurity analyst": [
+    "network security",
+    "cryptography",
+    "linux",
+    "ethical hacking",
+    "firewalls",
+    "vulnerability assessment"
+  ]
+}
