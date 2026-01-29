@@ -1,0 +1,213 @@
+	SOFTWARE REQUIREMENTS SPECIFICATION (SRS)
+
+TABLE OF CONTENTS							Page no:							
+1.Introduction								     2
+1.1 Purpose 			     	
+1.2 Scope 
+1.3 Definitions, Acronyms & Abbreviations
+
+2.Overall Description							  3-4
+2.1 Product Perspective
+2.2 User Classes and Characteristics
+2.3 Operating Environment
+2.4 Assumptions & Dependencies
+3.Specific Requirements						  4-6
+3.1 Functional Requirements (FR)
+    3.1.1 User Management
+    3.1.2 Product Browsing & Search
+    3.1.3 Cart & Wishlist
+    3.1.4 Order & Payment Processing
+    3.1.5 Shop & Seller Management
+    3.1.6 Chatbot & Recommendations
+    3.1.7 Admin Module
+3.2 Non‑Functional Requirements (NFR)
+    3.2.1 Performance
+    3.2.2 Scalability
+    3.2.3 Security
+    3.2.4 Reliability & Availability
+    3.2.5 Usability
+4.External Interface Requirements						7
+4.1 User Interfaces
+4.2 Software Interfaces
+4.3 Hardware & Communications Interfaces
+5.Future Enhancements							7
+6.Conclusion									7
+
+ 
+ApnaDukaan – Empowering Local Retail through AI‑Driven Commerce
+
+1. Introduction
+1.1 Purpose 
+The purpose of this SRS is to formally specify all functional and non‑functional requirements of the ApnaDukaan system, so that developers, testers, and stakeholders share a clear, common understanding of what needs to be built. It will guide design, implementation, testing, and maintenance activities throughout the project lifecycle.
+1.2 Scope 
+ApnaDukaan is a web‑based e‑commerce platform that enables neighborhood grocery and retail shops to establish an online presence and serve customers digitally. The system supports customer browsing and secure checkout, shopkeeper inventory and pricing management, delivery tracking, and AI‑driven chatbot assistance with recommendations and dynamic store ratings. The platform is structured as a three‑interfaced system managing the end‑to‑end supply chain for local commerce.
+1.3 Definitions, Acronyms & Abbreviations
+●	SRS – Software Requirements Specification
+●	UI – User Interface
+●	UX – User Experience
+●	AI – Artificial Intelligence
+●	CRUD – Create, Read, Update, Delete
+●	UPI – Unified Payments Interface
+●	API – Application Programming Interface
+●	NFR – Non‑Functional Requirements
+●	FR – Functional Requirements
+●	HTTP/HTTPS – HyperText Transfer Protocol (Secure)
+●	MongoDB – NoSQL database
+●	LangChain – Framework for AI chatbot integration
+●	Render – Cloud deployment platform
+●	PayPal – Payment processing service
+
+ 
+
+
+2. Overall Description
+2.1 Product Perspective
+ApnaDukaan is a standalone web application using React.js and TailwindCSS at the frontend, Node.js and Express.js at the backend, and MongoDB Atlas as the database, deployed on Render with PayPal Sandbox for payment processing. It integrates a LangChain‑based chatbot module that works on top of the core e‑commerce flows to assist users in real time with product discovery, recommendations, and customer support.
+2.2 User Classes and Characteristics
+Customer
+End‑user who browses products, adds items to cart or wishlist, and places orders through secure checkout with chatbot support. Requires an intuitive, responsive interface for shopping across desktop and mobile devices.
+Shopkeeper / Shop Admin
+Local store owner who manages shop profile, product listings, prices, offers, and order fulfillment using a simple web dashboard. Needs a straightforward inventory management interface to update products and track sales.
+Platform Admin
+Global administrator who manages users, shops, orders, payments, refunds, and analytics across the entire platform. Requires access to comprehensive reporting and oversight tools.
+Delivery Personnel
+User responsible for picking up orders from shops and delivering them to customers while updating delivery status in real time. Needs a simplified interface focused on order assignment and status updates.
+2.3 Operating Environment
+●	Client side: Modern web browsers (Chrome, Firefox, Edge, mobile browsers) on internet‑connected devices (desktops, laptops, smartphones).
+●	Server side: Node.js runtime with Express.js framework, connected to MongoDB Atlas for data persistence, Render for cloud deployment, PayPal Sandbox for payment testing, and LangChain APIs for chatbot functionality.
+●	Network: Stable internet connectivity required for all parties.
+
+2.4 Assumptions & Dependencies
+●	Users have reliable internet connectivity and a compatible modern web browser.
+●	Local shops provide accurate product, pricing, and stock information.
+●	PayPal Sandbox, MongoDB Atlas, Render, and LangChain remain available and correctly configured.
+●	User data privacy and payment security follow industry standards.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+3. Specific Requirements
+3.1 Functional Requirements (FR)
+3.1.1 User Management
+FR‑1: When a new user submits valid email/phone and password details, the system shall create a user account and confirm successful registration.
+FR‑2: When a registered user enters valid credentials, the system shall authenticate the user and grant secure access with role‑based access control.
+FR‑3: When a logged‑in user selects the logout option, the system shall terminate the session and redirect the user to the login page.
+FR‑4: When a user updates profile details such as name, address, or contact information, the system shall save the changes and display a confirmation message.
+FR‑5: When a user accesses the home page, the system shall identify the user’s location and display nearby local shops accordingly.
+3.1.2 Product Browsing & Search
+FR‑6: When a user selects a product category, the system shall display all products associated with that category.
+FR‑7: When a user enters a keyword in the search bar, the system shall retrieve and display matching products and shops.
+FR‑8: When a user selects a product, the system shall display detailed information including price, images, availability status, and shop name.
+FR‑9: When a product has an active offer or discount, the system shall display the discounted price along with the original price and discount details.
+3.1.3 Cart & Wishlist
+FR‑10: When a user clicks “Add to Cart”, the system shall add the selected product to the shopping cart and update the cart total.
+FR‑11: When a user removes a product from the cart, the system shall update the cart contents and recalculate the total amount.
+FR‑12: When a user adds a product to the wishlist, the system shall store the product for future reference.
+FR‑13: When the cart is updated, the system shall automatically calculate the total cost including applicable taxes and discounts.
+FR‑14: When a product’s inventory reaches zero, the system shall display “Out of Stock” and disable the “Add to Cart” button.
+3.1.4 Order & Payment Processing
+FR‑15: When a user confirms checkout, the system shall create a new order with selected products and delivery address.
+FR‑16: When a user selects a payment method (UPI, card, or net banking), the system shall securely process the payment through the configured gateway.
+FR‑17: When card details are submitted, the system shall process the payment and display a transaction confirmation within a few seconds.
+FR‑18: Upon successful payment, the system shall generate a digital invoice and make it available to the user.
+FR‑19: After order placement, the system shall send an order confirmation notification to the customer and the corresponding shop.
+FR‑20: When a user views order history, the system shall display all orders with current status (pending, confirmed, packed, out for delivery, delivered).
+3.1.5 Shop & Seller Management
+FR‑21: When a seller registers, the system shall create a shop profile with name, location, and contact details and allow ongoing management.
+FR‑22: When a seller adds a new product, the system shall store product details and make the product visible to customers.
+FR‑23: When a seller updates or deletes a product, the system shall immediately reflect the changes on the platform.
+FR‑24: When a seller configures prices or discounts, the system shall apply the updated pricing to the corresponding products.
+3.1.6 Chatbot & Recommendations
+FR‑25: When a user initiates a chat query, the system shall provide real‑time assistance using a LangChain‑powered chatbot.
+FR‑26: When sufficient user behavior data is available, the system shall generate personalized product recommendations.
+FR‑27: When users submit ratings or reviews, the system shall store and display them on the corresponding shop or product pages.
+3.1.7 Admin Module
+FR‑28: When an administrator accesses the admin panel, the system shall allow management of user and seller accounts.
+FR‑29: When an admin views transactions, the system shall display order and payment details with filters.
+FR‑30: When an admin requests reports, the system shall generate analytics related to sales and platform usage.
+
+3.2 Non‑Functional Requirements (NFR)
+3.2.1 Performance
+NFR‑1: For common actions (page load, search, add to cart), the system shall respond within about 2–3 seconds under normal load.
+NFR‑2: When multiple users access the system simultaneously, it shall maintain stable performance without significant degradation.
+3.2.2 Scalability
+NFR‑3: As the number of users, shops, or products increases, the system shall continue to function correctly without major architectural changes.
+NFR‑4: When required, the system shall support cloud‑based scaling using MongoDB Atlas and the deployment platform.
+3.2.3 Security
+NFR‑5: The system shall enforce authentication and role‑based authorization for protected resources.
+NFR‑6: Sensitive data (passwords, personal details, payment‑related data) shall be encrypted or hashed to prevent unauthorized access.
+NFR‑7: Payment processing shall use secure payment practices and rely on secure mechanisms provided by the payment gateway.
+3.2.4 Reliability & Availability
+NFR‑8: The system shall remain operational 24×7 except during scheduled maintenance periods.
+NFR‑9: In the event of system failure, the system shall preserve data integrity through backup and recovery mechanisms.
+3.2.5 Usability
+NFR‑10: The interface shall provide a responsive, intuitive experience with clear navigation and user‑friendly error messages.
+NFR‑11: All core features shall be accessible on both desktop and mobile devices using responsive design.
+
+
+
+
+
+
+
+
+
+
+
+4. External Interface Requirements
+4.1 User Interfaces
+●	The user interface will be implemented as a responsive web application using React.js and TailwindCSS for all roles (Customer, Shopkeeper, Admin, Delivery).
+●	The UI shall provide clear navigation to Login/Registration, Home (nearby shops), Product Listing, Product Details, Cart, Checkout, Order Tracking, Shop Dashboard, and Admin Panel.
+●	The layout and components will follow dedicated Figma wireframes prepared for this project.
+●	The UML use case diagrams described in Section 2.5 serve as a reference to ensure required flows are implemented in the UI.
+4.2 Software Interfaces
+●	MongoDB Atlas for persistent storage of users, shops, products, orders, and ratings.
+●	PayPal Sandbox and other simulated methods for payment processing during development.
+●	LangChain APIs for chatbot and recommendation functionality.
+●	Render as the cloud deployment platform hosting backend and optionally frontend.
+4.3 Hardware & Communications Interfaces
+●	Standard client devices: desktops, laptops, smartphones with modern browsers.
+●	Communication via HTTPS using RESTful APIs between frontend and backend.
+
+5. Future Enhancements
+●	Multi‑city support with advanced location‑based search.
+●	Integration of additional payment gateways and production‑ready UPI flows.
+●	Native Android and iOS mobile applications.
+●	Advanced analytics dashboards for shopkeepers with AI‑based demand forecasting.
+●	Real‑time inventory synchronization and loyalty programs.
+
+6. Conclusion
+This SRS document defines the problem, scope, users, environment, and detailed functional and non‑functional requirements for the ApnaDukaan AI‑enabled local commerce platform. .It acts as a baseline for design, implementation, testing, and future enhancement of the system in line with the project milestones.
