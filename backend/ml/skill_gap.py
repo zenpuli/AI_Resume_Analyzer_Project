@@ -1,73 +1,38 @@
 import json
 import os
-from ml.skill_extractor import extract_skills
+from utils.skill_extractor import extract_skills_from_text
 
 
 def skill_gap_analysis(resume_text: str, predicted_roles: list):
-    """
-    Performs skill gap analysis between resume skills
-    and predefined job role requirements.
-    """
-
-    # Absolute path to backend directory
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     JOB_SKILLS_PATH = os.path.join(BASE_DIR, "job_skills.json")
 
-    # Load job skills safely
-    try:
-        with open(JOB_SKILLS_PATH, "r", encoding="utf-8") as file:
-            job_skills = json.load(file)
-    except FileNotFoundError:
-        return {
-            "error": "job_skills.json not found",
-            "expected_path": JOB_SKILLS_PATH
-        }
-    except json.JSONDecodeError:
-        return {
-            "error": "Invalid JSON format",
-            "message": "Please fix job_skills.json"
-        }
+    with open(JOB_SKILLS_PATH, "r", encoding="utf-8") as f:
+        job_skills = json.load(f)
 
-    # Extract and normalize resume skills
-    resume_skills = set(
-        skill.lower() for skill in extract_skills(resume_text)
-    )
-
-    if not predicted_roles:
-        return {
-            "warning": "No predicted roles available",
-            "resume_skills": sorted(resume_skills)
-        }
+    resume_skills = set(extract_skills_from_text(resume_text))
 
     report = {}
 
     for role in predicted_roles:
-        role_name = role.lower().strip()
+        role = role.lower()
 
-        # If no mapping exists
-        if role_name not in job_skills:
-            report[role_name] = {
-                "status": "no_skill_mapping",
-                "message": "No predefined skills for this role"
-            }
-            continue
+        # fallback if role not found
+        if role not in job_skills:
+            job_skills[role] = list(resume_skills)[:5]
 
-        required_skills = set(
-            skill.lower() for skill in job_skills[role_name]
-        )
+        required = set(job_skills[role])
 
-        matched_skills = required_skills & resume_skills
-        missing_skills = required_skills - resume_skills
+        matched = required & resume_skills
+        missing = required - resume_skills
 
         match_percentage = round(
-            (len(matched_skills) / len(required_skills)) * 100, 2
-        ) if required_skills else 0.0
+            (len(matched) / len(required)) * 100
+        ) if required else 50
 
-        report[role_name] = {
-            "matched_skills": sorted(matched_skills),
-            "missing_skills": sorted(missing_skills),
-            "total_required_skills": len(required_skills),
-            "matched_count": len(matched_skills),
+        report[role] = {
+            "matched_skills": list(matched),
+            "missing_skills": list(missing),
             "match_percentage": match_percentage
         }
 

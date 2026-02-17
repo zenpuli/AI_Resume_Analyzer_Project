@@ -1,178 +1,45 @@
 {
-  "software engineer": [
-    "data structures",
-    "algorithms",
-    "oops",
-    "system design",
-    "problem solving",
-    "git",
-    "sql",
-    "debugging",
-    "rest api"
-  ],
+  "domains": {
 
-  "python developer": [
-    "python",
-    "data structures",
-    "algorithms",
-    "oops",
-    "flask",
-    "django",
-    "fastapi",
-    "sql",
-    "git",
-    "rest api"
-  ],
+    "core_cs": {
+      "software engineer": ["data structures", "algorithms", "oops", "git"],
+      "java developer": ["java", "spring", "hibernate", "sql", "git"],
+      "python developer": ["python", "flask", "django", "sql", "git"]
+    },
 
-  "java developer": [
-    "java",
-    "oops",
-    "data structures",
-    "algorithms",
-    "spring",
-    "spring boot",
-    "hibernate",
-    "sql",
-    "git",
-    "rest api"
-  ],
+    "web_development": {
+      "frontend developer": ["html", "css", "javascript", "react"],
+      "full stack developer": ["react", "node.js", "sql", "git"]
+    },
 
-  "full stack developer": [
-    "html",
-    "css",
-    "javascript",
-    "react",
-    "node.js",
-    "express",
-    "sql",
-    "rest api",
-    "git"
-  ],
+    "mobile_development": {
+      "android developer": ["kotlin", "java", "android", "firebase", "mvvm"],
+      "flutter developer": ["flutter", "dart", "firebase", "rest api"]
+    },
 
-  "frontend developer": [
-    "html",
-    "css",
-    "javascript",
-    "react",
-    "responsive design",
-    "ui/ux",
-    "git"
-  ],
+    "ai_ml": {
+      "data scientist": ["python", "machine learning", "pandas", "numpy"],
+      "ml engineer": ["python", "tensorflow", "pytorch"]
+    },
 
-  "backend developer": [
-    "python",
-    "java",
-    "node.js",
-    "django",
-    "spring boot",
-    "rest api",
-    "sql",
-    "authentication",
-    "git"
-  ],
+    "cloud_devops": {
+      "devops engineer": ["docker", "kubernetes", "aws"],
+      "cloud engineer": ["aws", "azure", "terraform"]
+    },
 
-  "android developer": [
-    "java",
-    "kotlin",
-    "android studio",
-    "xml",
-    "firebase",
-    "mvvm",
-    "room database",
-    "rest api",
-    "ui/ux"
-  ],
+    "cyber_security": {
+      "cyber security analyst": ["network security", "cryptography"]
+    },
 
-  "flutter developer": [
-    "flutter",
-    "dart",
-    "firebase",
-    "rest api",
-    "state management",
-    "ui/ux",
-    "git"
-  ],
+    "database": {
+      "database engineer": ["sql", "mongodb", "performance tuning"]
+    }
 
-  "data analyst": [
-    "python",
-    "pandas",
-    "numpy",
-    "sql",
-    "excel",
-    "data visualization",
-    "statistics"
-  ],
+  },
 
-  "data scientist": [
-    "python",
-    "machine learning",
-    "deep learning",
-    "statistics",
-    "pandas",
-    "numpy",
-    "scikit-learn",
-    "data visualization"
-  ],
-
-  "machine learning engineer": [
-    "python",
-    "machine learning",
-    "deep learning",
-    "tensorflow",
-    "pytorch",
-    "data preprocessing",
-    "model deployment"
-  ],
-
-  "ai engineer": [
-    "machine learning",
-    "deep learning",
-    "nlp",
-    "computer vision",
-    "python",
-    "tensorflow",
-    "pytorch"
-  ],
-
-  "devops engineer": [
-    "linux",
-    "docker",
-    "kubernetes",
-    "ci/cd",
-    "cloud computing",
-    "aws",
-    "monitoring",
-    "git"
-  ],
-
-  "cloud engineer": [
-    "cloud computing",
-    "aws",
-    "azure",
-    "gcp",
-    "docker",
-    "kubernetes",
-    "linux",
-    "networking"
-  ],
-
-  "database administrator": [
-    "sql",
-    "mysql",
-    "postgresql",
-    "mongodb",
-    "indexing",
-    "backup",
-    "replication",
-    "performance tuning"
-  ],
-
-  "cybersecurity analyst": [
-    "network security",
-    "cryptography",
-    "linux",
-    "ethical hacking",
-    "firewalls",
-    "vulnerability assessment"
-  ]
+  "cross_domain_roles": {
+    "android developer": ["kotlin", "java", "android", "firebase", "mvvm"],
+    "flutter developer": ["flutter", "dart", "firebase", "rest api"],
+    "python developer": ["python", "flask", "django", "sql", "git"]
+  }
 }

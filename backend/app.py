@@ -1,18 +1,12 @@
-# backend/app.py
-
 from fastapi import FastAPI
-from pydantic import BaseModel
-from ml.analyze_resume import analyze_resume
+from screen1.router import router as screen1_router
+from screen2.router import router as screen2_router
 
 app = FastAPI(title="AI Resume Analyzer")
 
-class ResumeRequest(BaseModel):
-    resume_text: str
-
-@app.post("/analyze")
-def analyze(request: ResumeRequest):
-    return analyze_resume(request.resume_text)
+app.include_router(screen1_router)
+app.include_router(screen2_router)
 
 @app.get("/")
-def health():
-    return {"status": "Backend running"}
+def root():
+    return {"status": "Backend running successfully"}

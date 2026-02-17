@@ -1,22 +1,32 @@
-def generate_recommendations(skills_report):
-    recs = []
+def generate_recommendations(skills_report, resume_text):
+    recommendations = []
+    resume_text = resume_text.lower()
 
-    for role, data in skills_report.items():
-        if "missing_skills" not in data:
-            continue
+    missing_skills = set()
 
-        for skill in data["missing_skills"]:
-            recs.append({
-                "title": f"Learn {skill.title()}",
-                "severity": "High" if skill in [
-                    "system design",
-                    "docker",
-                    "kubernetes",
-                    "machine learning"
-                ] else "Medium",
-                "reason": f"Required for {role} roles"
-            })
+    for role_data in skills_report.values():
+        if "missing_skills" in role_data:
+            missing_skills.update(role_data["missing_skills"])
 
-    # Remove duplicates
-    unique = {rec["title"]: rec for rec in recs}
-    return list(unique.values())[:6]
+    for skill in missing_skills:
+        recommendations.append({
+            "title": f"Learn {skill}",
+            "severity": "High",
+            "reason": f"{skill} is required for your target roles"
+        })
+
+    if "project" not in resume_text:
+        recommendations.append({
+            "title": "Add Projects",
+            "severity": "Medium",
+            "reason": "Projects improve practical credibility"
+        })
+
+    if "intern" not in resume_text:
+        recommendations.append({
+            "title": "Add Internship Experience",
+            "severity": "Medium",
+            "reason": "Internships increase job readiness"
+        })
+
+    return recommendations
