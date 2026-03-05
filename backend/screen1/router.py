@@ -1,17 +1,9 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-import json
-import os
-
+from utils.job_skill_loader import get_skills_for_role
 from screen1.skill_gap_simple import analyze_skill_gap
 
-router = APIRouter(prefix="/screen1", tags=["Screen 1"])
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-JOB_SKILLS_PATH = os.path.join(BASE_DIR, "job_skills.json")
-
-with open(JOB_SKILLS_PATH, "r", encoding="utf-8") as f:
-    JOB_SKILLS = json.load(f)
+router = APIRouter(prefix="/screen1", tags=["Manual Role Analysis"])
 
 
 class Screen1Request(BaseModel):
@@ -23,10 +15,10 @@ class Screen1Request(BaseModel):
 def analyze_screen1(data: Screen1Request):
     role = data.target_role.lower()
 
-    if role not in JOB_SKILLS:
-        return {"error": "Role not found in job_skills.json"}
+    required_skills = get_skills_for_role(role)
 
-    required_skills = JOB_SKILLS[role]
+    if not required_skills:
+        return {"error": "Role not found in job_skills.json"}
 
     analysis = analyze_skill_gap(
         user_skills=data.user_skills,

@@ -1,6 +1,5 @@
 {
   "domains": {
-
     "core_cs": {
       "software engineer": ["data structures", "algorithms", "oops", "git"],
       "java developer": ["java", "spring", "hibernate", "sql", "git"],
@@ -9,7 +8,8 @@
 
     "web_development": {
       "frontend developer": ["html", "css", "javascript", "react"],
-      "full stack developer": ["react", "node.js", "sql", "git"]
+      "full stack developer": ["react", "node.js", "sql", "git"],
+      "backend developer": ["node.js", "sql", "api", "git"]
     },
 
     "mobile_development": {
@@ -19,7 +19,7 @@
 
     "ai_ml": {
       "data scientist": ["python", "machine learning", "pandas", "numpy"],
-      "ml engineer": ["python", "tensorflow", "pytorch"]
+      "machine learning engineer": ["python", "tensorflow", "pytorch"]
     },
 
     "cloud_devops": {
@@ -28,18 +28,11 @@
     },
 
     "cyber_security": {
-      "cyber security analyst": ["network security", "cryptography"]
+      "security analyst": ["network security", "cryptography"]
     },
 
     "database": {
       "database engineer": ["sql", "mongodb", "performance tuning"]
     }
-
-  },
-
-  "cross_domain_roles": {
-    "android developer": ["kotlin", "java", "android", "firebase", "mvvm"],
-    "flutter developer": ["flutter", "dart", "firebase", "rest api"],
-    "python developer": ["python", "flask", "django", "sql", "git"]
   }
 }
