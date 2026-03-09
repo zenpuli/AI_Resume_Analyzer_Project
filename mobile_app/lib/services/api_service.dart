@@ -4,40 +4,22 @@ import 'package:http/http.dart' as http;
 class ApiService {
   static const String baseUrl = "http://127.0.0.1:8000";
 
-  static Future<Map<String, dynamic>> analyzeResume(
-      List<int> bytes, String filename) async {
+  static Future<Map<String, dynamic>> analyzeResume(List<int> bytes, String filename) async {
     try {
-      var request =
-          http.MultipartRequest('POST', Uri.parse('$baseUrl/analyze'));
+      var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/analyze-resume'));
+      request.files.add(http.MultipartFile.fromBytes('file', bytes, filename: filename));
 
-      request.files.add(
-        http.MultipartFile.fromBytes(
-          'file',
-          bytes,
-          filename: filename,
-        ),
-      );
-
-      final response = await request.send().timeout(
-            const Duration(seconds: 15),
-          );
-
+      final response = await request.send().timeout(const Duration(seconds: 30));
       final responseData = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
         return json.decode(responseData);
       } else {
-        throw Exception("Server error");
+        throw Exception("Server Error: ${response.statusCode}");
       }
     } catch (e) {
-      // fallback when backend is not connected
-      return {
-        "score": 0,
-        "skills": [],
-        "missing_skills": [],
-        "top_jobs": [],
-        "error": "Backend not connected"
-      };
+      print("❌ Connection Error: $e");
+      return {"error": "Backend connection failed"};
     }
   }
 }

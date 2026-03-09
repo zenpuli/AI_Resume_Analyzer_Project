@@ -72,7 +72,7 @@ df = df[df["Category"].isin(GOLD_ROLES)]
 # -----------------------------
 # Filter rare job roles
 # -----------------------------
-MIN_SAMPLES_PER_ROLE = 40
+MIN_SAMPLES_PER_ROLE = 10
 
 role_counts = df["Category"].value_counts()
 valid_roles = role_counts[role_counts >= MIN_SAMPLES_PER_ROLE].index
@@ -112,7 +112,7 @@ pipeline = Pipeline([
     )),
     ("clf", LogisticRegression(
         solver="saga",
-        max_iter=3000,
+        max_iter=1000,
         tol=1e-2,
         C=1.2,
         class_weight="balanced",

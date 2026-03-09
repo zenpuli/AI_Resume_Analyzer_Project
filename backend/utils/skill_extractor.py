@@ -10,6 +10,12 @@ KNOWN_SKILLS = [
     # Mobile
     "android studio", "flutter", "xml",
 
+    "flutter", "dart", "kotlin", "swift", "android studio", "xcode", "firebase", "retrofit", "mvvm", "bloc", "provider",
+
+    "kotlin", "dart", "flutter", "android studio", "firebase", "xml", "mvvm", "retrofit", "bloc", "provider",
+
+    "react", "angular", "vue", "tailwind css", "bootstrap", "redux", "next.js", "typescript",
+
     # Backend
     "django", "flask", "fastapi", "spring", "spring boot",
 

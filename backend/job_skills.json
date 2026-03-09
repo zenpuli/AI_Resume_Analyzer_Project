@@ -1,38 +1,25 @@
 {
   "domains": {
-    "core_cs": {
-      "software engineer": ["data structures", "algorithms", "oops", "git"],
-      "java developer": ["java", "spring", "hibernate", "sql", "git"],
-      "python developer": ["python", "flask", "django", "sql", "git"]
+    "management": {
+      "project manager": ["scrum", "agile", "jira", "communication", "planning", "python", "java", "algorithms"]
     },
-
+    "networking": {
+      "network engineer": ["routing", "switching", "tcp/ip", "security", "linux", "python", "c", "algorithms"]
+    },
     "web_development": {
-      "frontend developer": ["html", "css", "javascript", "react"],
-      "full stack developer": ["react", "node.js", "sql", "git"],
-      "backend developer": ["node.js", "sql", "api", "git"]
+      "frontend developer": ["html", "css", "javascript", "react", "redux", "tailwind css", "ui/ux", "java"],
+      "backend developer": ["node.js", "express", "sql", "mongodb", "rest api", "python", "java"]
     },
-
     "mobile_development": {
-      "android developer": ["kotlin", "java", "android", "firebase", "mvvm"],
-      "flutter developer": ["flutter", "dart", "firebase", "rest api"]
+      "android developer": ["java", "kotlin", "android studio", "firebase", "mvvm", "retrofit", "algorithms"],
+      "flutter developer": ["dart", "flutter", "firebase", "bloc", "rest api", "git", "algorithms"]
     },
-
-    "ai_ml": {
-      "data scientist": ["python", "machine learning", "pandas", "numpy"],
-      "machine learning engineer": ["python", "tensorflow", "pytorch"]
+    "data_science": {
+      "data scientist": ["python", "machine learning", "pandas", "numpy", "scikit-learn", "sql", "algorithms"],
+      "ai engineer": ["python", "tensorflow", "pytorch", "nlp", "deep learning", "algorithms"]
     },
-
-    "cloud_devops": {
-      "devops engineer": ["docker", "kubernetes", "aws"],
-      "cloud engineer": ["aws", "azure", "terraform"]
-    },
-
-    "cyber_security": {
-      "security analyst": ["network security", "cryptography"]
-    },
-
-    "database": {
-      "database engineer": ["sql", "mongodb", "performance tuning"]
+    "database_administration": {
+      "database administrator": ["mysql", "sql", "oracle", "database design", "nosql", "java", "python", "data structures"]
     }
   }
 }

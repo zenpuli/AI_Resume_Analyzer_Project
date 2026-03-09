@@ -12,9 +12,11 @@ with open(JOB_SKILLS_PATH, "r", encoding="utf-8") as f:
 
 # create training text from roles + skills
 texts = []
-for role, skills in job_skills.items():
-    combined = role + " " + " ".join(skills)
-    texts.append(combined)
+# Old code failed because job_skills has branches now
+for branch, roles in job_skills.items():
+    for role, skills in roles.items():
+        combined = role + " " + " ".join(skills)
+        texts.append(combined)
 
 vectorizer = TfidfVectorizer(stop_words="english")
 vectorizer.fit(texts)
