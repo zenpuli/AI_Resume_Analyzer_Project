@@ -5,8 +5,10 @@ import '../services/api_service.dart';
 import '../services/auth_service.dart';
 import '../services/database_service.dart';
 
+// 🛡️ Fixed: Added the missing StatefulWidget class
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -30,16 +32,31 @@ class _HomeScreenState extends State<HomeScreen> {
         result.files.single.name,
       );
 
-      // ✨ NEW: Automatically save to Firebase History
-      await DatabaseService.saveAnalysisResult(response);
-
+      // ⚡ SPEED BOOST: Navigation First
       setState(() => loading = false);
       if (!mounted) return;
+
+      if (response.containsKey('error')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response['error'], style: const TextStyle(color: Colors.white)),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+
+      // 1. Move to results immediately
       Navigator.pushNamed(context, '/analysis', arguments: response);
+
+      // 2. Archive to Firebase in the background (Non-blocking)
+      DatabaseService.saveAnalysisResult(response);
+
     } catch (e) {
       setState(() => loading = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Error: Check backend and internet connection.")),
+        const SnackBar(content: Text("Analysis failed. Please check signal strength.")),
       );
     }
   }
@@ -70,23 +87,26 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text("Welcome, ${AuthService.userName}", style: GoogleFonts.poppins(fontSize: 24, color: Colors.white60)),
             const SizedBox(height: 10),
-            Text("ResumeAI Analyzer", style: GoogleFonts.poppins(fontSize: 48, fontWeight: FontWeight.bold)),
+            Text("ResumeAI Analyzer", style: GoogleFonts.poppins(fontSize: 48, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 50),
             GestureDetector(
               onTap: loading ? null : pickResume,
               child: Container(
-                width: 500, height: 200,
+                width: 500, height: 220,
                 decoration: BoxDecoration(
                   color: const Color(0xFF0F172A),
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.5)),
+                  border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.5), width: 2),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(loading ? Icons.sync : Icons.cloud_upload, color: const Color(0xFF22D3EE), size: 50),
-                    const SizedBox(height: 15),
-                    Text(loading ? "AI is processing..." : "Upload Resume to Analyze", style: const TextStyle(fontSize: 18)),
+                    Icon(loading ? Icons.sync : Icons.cloud_upload_outlined, color: const Color(0xFF22D3EE), size: 60),
+                    const SizedBox(height: 20),
+                    Text(
+                      loading ? "AI is processing..." : "Upload Resume to Analyze", 
+                      style: GoogleFonts.poppins(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)
+                    ),
                   ],
                 ),
               ),

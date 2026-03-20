@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'pages/login_page.dart'; // ➕ Add this
-import 'pages/signup_page.dart'; // ➕ Add this
+import 'pages/login_page.dart';
+import 'pages/signup_page.dart';
 import 'screens/home_screen.dart';
 import 'screens/analysis_screen.dart';
 import 'services/auth_service.dart';
@@ -26,7 +26,7 @@ class ResumeAIApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF050B18),
         fontFamily: 'Inter',
       ),
-      // If logged in, go to home, else login page
+      // Auto-login logic
       initialRoute: AuthService.isLoggedIn() ? '/home' : '/login',
       routes: {
         '/login': (_) => const LoginPage(),
