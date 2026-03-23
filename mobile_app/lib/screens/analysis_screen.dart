@@ -11,10 +11,14 @@ class AnalysisScreen extends StatelessWidget {
     final dynamic rawArgs = ModalRoute.of(context)!.settings.arguments;
     final Map<String, dynamic> data = (rawArgs is Map) ? Map<String, dynamic>.from(rawArgs) : {};
 
+    // DYNAMIC MAPPING
     final scores = Map<String, dynamic>.from(data['scores'] ?? {});
     final roles = List.from(data['top_3_roles'] ?? []);
-    final String topRole = roles.isNotEmpty ? roles[0]['role'] : "Unknown";
-    final analysis = Map<String, dynamic>.from(data['skills_analysis']?[topRole] ?? {});
+    final resumeSkills = List.from(data['resume_skills'] ?? []);
+    
+    // Improved Dynamic Extraction for Missing Skills
+    final missingSkills = List.from(data['missing_skills'] ?? []);
+    
     final recommendations = List.from(data['recommendations'] ?? []);
 
     return Scaffold(
@@ -25,11 +29,11 @@ class AnalysisScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Dynamic Gauges (Overall, Skills, Education, Formatting)
+            // 1. Dynamic Gauges
             _buildScoreGrid(scores),
             const SizedBox(height: 50),
 
-            // 2. Job Role Cards with Demand Scales
+            // 2. Job Role Cards
             Text("Predicted Job Roles", style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 20),
             _buildRoleCards(roles),
@@ -38,10 +42,10 @@ class AnalysisScreen extends StatelessWidget {
             // 3. Responsive Skills Analysis
             Text("Skills Gap Analysis", style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 20),
-            _buildSkillsLayout(analysis, List.from(data['resume_skills'] ?? [])),
+            _buildSkillsLayout(missingSkills, resumeSkills), // Pass missingSkills directly
             const SizedBox(height: 50),
 
-            // 4. Actionable Roadmap with Severity Badges
+            // 4. Actionable Roadmap
             Text("Improvement Recommendations", style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 20),
             _buildRecommendationGrid(recommendations),
@@ -51,7 +55,7 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
-  // --- Header with Sign Out ---
+  // --- Header with Sign Out (KEEP LOGIC) ---
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
@@ -72,7 +76,7 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
-  // --- Section 1: Circular Gauges ---
+  // --- Gauges ---
   Widget _buildScoreGrid(Map scores) {
     return Wrap(
       spacing: 40, runSpacing: 30,
@@ -99,7 +103,7 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
-  // --- Section 2: Role Cards with Demand ---
+  // --- Role Cards (KEEP UI) ---
   Widget _buildRoleCards(List roles) {
     return Wrap(
       spacing: 20, runSpacing: 20,
@@ -121,7 +125,7 @@ class AnalysisScreen extends StatelessWidget {
   }
 
   Widget _demandBadge(dynamic confidence) {
-    bool isHigh = (confidence as num) > 30; // High demand logic for demo
+    bool isHigh = (confidence as num) > 30;
     Color c = isHigh ? const Color(0xFF34D399) : const Color(0xFFFBBF24);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -130,14 +134,14 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
-  // --- Section 3: Skills Split ---
-  Widget _buildSkillsLayout(Map analysis, List resumeSkills) {
+  // --- Skills Split (IMPROVED MAPPING) ---
+  Widget _buildSkillsLayout(List missingSkills, List resumeSkills) {
     return LayoutBuilder(builder: (context, constraints) {
       return Wrap(
         spacing: 20, runSpacing: 20,
         children: [
           _skillBox("Detected Skills", resumeSkills, const Color(0xFF34D399), constraints.maxWidth > 800 ? 0.45 : 1),
-          _skillBox("Missing Skills", List.from(analysis['missing_skills'] ?? []), const Color(0xFFF87171), constraints.maxWidth > 800 ? 0.45 : 1),
+          _skillBox("Missing Skills", missingSkills, const Color(0xFFF87171), constraints.maxWidth > 800 ? 0.45 : 1),
         ],
       );
     });
@@ -162,7 +166,7 @@ class AnalysisScreen extends StatelessWidget {
     });
   }
 
-  // --- Section 4: Recommendations Grid ---
+  // --- Recommendations ---
   Widget _buildRecommendationGrid(List recs) {
     return Wrap(
       spacing: 20, runSpacing: 20,

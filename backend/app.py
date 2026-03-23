@@ -11,7 +11,7 @@ app = FastAPI(title="AI Resume Analyzer")
 # 1. Enhanced CORS: Optimized for Firebase Hosting & Render communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allows your .web.app to talk to this API
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,17 +37,15 @@ async def upload_resume(file: UploadFile = File(...)):
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # Step A: Extract text (supports PDF/DOCX)
-        # Your extract_text_from_resume function is called here
+        # Step A: Extract text
         resume_text = extract_text_from_resume(temp_path)
         
         if not resume_text or len(resume_text.strip()) < 10:
             return {"error": "provide a valid resume"}
 
-        # Step B: Run the 93.69% Accuracy Pipeline (analyze_resume.py)
+        # Step B: Run the 93.69% Accuracy Pipeline
         analysis_results = analyze_resume(resume_text)
         
-        # Handle the specific "invalid resume" error from the ML logic
         if isinstance(analysis_results, dict) and "error" in analysis_results:
              return analysis_results
 
@@ -55,11 +53,10 @@ async def upload_resume(file: UploadFile = File(...)):
 
     except Exception as e:
         print(f"❌ Server Error: {str(e)}")
-        # Return a clean JSON error instead of a generic 500 for the Flutter UI
         return {"error": "Internal processing error. Check file format."}
         
     finally:
-        # Step C: Cleanup - Always delete the file to save Render disk space
+        # Step C: Cleanup
         if os.path.exists(temp_path):
             try:
                 os.remove(temp_path)

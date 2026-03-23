@@ -9,28 +9,34 @@ def analyze_resume(resume_text: str):
     # ⚡ FAST CLEANING: Process only essential text
     cleaned_text = clean_resume_text(resume_text)
     
-    # 🚩 IMMEDIATE VALIDATION: Prevents model hanging on invalid files
+    # 🚩 IMMEDIATE VALIDATION
     professional_keywords = ["education", "experience", "skills", "projects", "summary", "objective", "intern"]
     hits = sum(1 for word in professional_keywords if word in cleaned_text.lower())
     
     if len(cleaned_text) < 150 or hits < 1:
         return {"error": "provide a valid resume"}
 
-    # ⚡ PARALLEL-READY PROCESSING: Only run core ML components
+    # ⚡ CORE ML COMPONENTS
     resume_skills = extract_skills_from_text(cleaned_text)
     predictions = predict_top_3_roles(cleaned_text)
     
-    # Speed Optimization: Run skill gap only on predicted roles to save 4-5 seconds
+    # Speed Optimization: Run skill gap only on predicted roles
     predicted_role_names = [p["role"] for p in predictions]
     skills_analysis = skill_gap_analysis(cleaned_text, predicted_role_names)
 
     scores = compute_scores(cleaned_text, skills_analysis)
     recommendations = generate_recommendations(skills_analysis, cleaned_text)
 
+    # --- DYNAMIC UPDATE ---
+    # Get the missing skills for the #1 predicted role specifically
+    top_role_name = predictions[0]["role"] if predictions else ""
+    missing_skills = skills_analysis.get(top_role_name, {}).get("missing_skills", [])
+
     return {
         "resume_skills": resume_skills,
         "top_3_roles": predictions,
-        "skills_analysis": skills_analysis,
+        "skills_analysis": skills_analysis, # Kept for backward compatibility
+        "missing_skills": missing_skills,     # Added for dynamic UI mapping
         "scores": scores,
         "recommendations": recommendations
     }
