@@ -9,7 +9,7 @@ class ApiService {
       var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/analyze-resume'));
       request.files.add(http.MultipartFile.fromBytes('file', bytes, filename: filename));
 
-      final response = await request.send().timeout(const Duration(seconds: 30));
+      final response = await request.send().timeout(const Duration(seconds: 60));
       final responseData = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
