@@ -1,16 +1,18 @@
 import joblib
 import os
 
-# Updated to point to the correct model folder
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL_PATH = os.path.join(BASE_DIR, "model", "job_model.pkl")
+# 🎯 THIS IS THE FIX: It looks in the SAME folder as this script
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(CURRENT_DIR, "job_model.pkl")
 
 def predict_top_3_roles(resume_text: str):
+    # This print will help us see the path in Render logs if it fails
     if not os.path.exists(MODEL_PATH):
+        print(f"❌ MODEL NOT FOUND AT: {MODEL_PATH}")
         return [{"role": "Model not trained yet", "confidence": 0}]
     
+    # Load the real model
     model = joblib.load(MODEL_PATH)
-    # The pipeline handles the TF-IDF internally
     probabilities = model.predict_proba([resume_text])[0]
     classes = model.classes_
 
