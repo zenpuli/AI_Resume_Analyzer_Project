@@ -6,7 +6,7 @@ from utils.resume_parser import clean_resume_text
 from utils.skill_extractor import extract_skills_from_text
 
 def analyze_resume(resume_text: str):
-    # ⚡ FAST CLEANING: Process only essential text
+    # ⚡ FAST CLEANING
     cleaned_text = clean_resume_text(resume_text)
     
     # 🚩 IMMEDIATE VALIDATION
@@ -27,16 +27,18 @@ def analyze_resume(resume_text: str):
     scores = compute_scores(cleaned_text, skills_analysis)
     recommendations = generate_recommendations(skills_analysis, cleaned_text)
 
-    # --- DYNAMIC UPDATE ---
-    # Get the missing skills for the #1 predicted role specifically
+    # --- DYNAMIC MAPPING UPDATE ---
+    # We extract the specific missing skills for the Top Predicted Role 
+    # so the Flutter UI can display them dynamically.
     top_role_name = predictions[0]["role"] if predictions else ""
-    missing_skills = skills_analysis.get(top_role_name, {}).get("missing_skills", [])
+    top_role_analysis = skills_analysis.get(top_role_name, {})
+    dynamic_missing_skills = top_role_analysis.get("missing_skills", [])
 
     return {
         "resume_skills": resume_skills,
         "top_3_roles": predictions,
-        "skills_analysis": skills_analysis, # Kept for backward compatibility
-        "missing_skills": missing_skills,     # Added for dynamic UI mapping
+        "missing_skills": dynamic_missing_skills, # Flattened for Flutter
+        "skills_analysis": skills_analysis,
         "scores": scores,
         "recommendations": recommendations
     }

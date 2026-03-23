@@ -11,12 +11,12 @@ class AnalysisScreen extends StatelessWidget {
     final dynamic rawArgs = ModalRoute.of(context)!.settings.arguments;
     final Map<String, dynamic> data = (rawArgs is Map) ? Map<String, dynamic>.from(rawArgs) : {};
 
-    // DYNAMIC MAPPING
+    // --- DYNAMIC DATA EXTRACTION ---
     final scores = Map<String, dynamic>.from(data['scores'] ?? {});
     final roles = List.from(data['top_3_roles'] ?? []);
     final resumeSkills = List.from(data['resume_skills'] ?? []);
     
-    // Improved Dynamic Extraction for Missing Skills
+    // This now pulls dynamically from the flattened backend key
     final missingSkills = List.from(data['missing_skills'] ?? []);
     
     final recommendations = List.from(data['recommendations'] ?? []);
@@ -42,7 +42,7 @@ class AnalysisScreen extends StatelessWidget {
             // 3. Responsive Skills Analysis
             Text("Skills Gap Analysis", style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 20),
-            _buildSkillsLayout(missingSkills, resumeSkills), // Pass missingSkills directly
+            _buildSkillsLayout(missingSkills, resumeSkills), // Now using dynamic lists
             const SizedBox(height: 50),
 
             // 4. Actionable Roadmap
@@ -55,7 +55,7 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
-  // --- Header with Sign Out (KEEP LOGIC) ---
+  // --- Header, Gauges, and UI Methods (Remaining Identical) ---
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
@@ -76,7 +76,6 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
-  // --- Gauges ---
   Widget _buildScoreGrid(Map scores) {
     return Wrap(
       spacing: 40, runSpacing: 30,
@@ -103,7 +102,6 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
-  // --- Role Cards (KEEP UI) ---
   Widget _buildRoleCards(List roles) {
     return Wrap(
       spacing: 20, runSpacing: 20,
@@ -134,7 +132,6 @@ class AnalysisScreen extends StatelessWidget {
     );
   }
 
-  // --- Skills Split (IMPROVED MAPPING) ---
   Widget _buildSkillsLayout(List missingSkills, List resumeSkills) {
     return LayoutBuilder(builder: (context, constraints) {
       return Wrap(
@@ -166,7 +163,6 @@ class AnalysisScreen extends StatelessWidget {
     });
   }
 
-  // --- Recommendations ---
   Widget _buildRecommendationGrid(List recs) {
     return Wrap(
       spacing: 20, runSpacing: 20,
