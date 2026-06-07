@@ -136,6 +136,7 @@ print(f"\nAccuracy: {accuracy * 100:.2f}%")
 # Save model
 # -----------------------------
 os.makedirs("../backend/model", exist_ok=True)
+
 joblib.dump(pipeline, "../backend/model/job_model.pkl")
 
 print("\n✅ Model trained and saved successfully.")
