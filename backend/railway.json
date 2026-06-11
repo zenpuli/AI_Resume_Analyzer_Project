@@ -1,8 +1,8 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "rootDirectory": "/backend",
-    "watchPatterns": ["backend/**"]
+    "rootDirectory": ".",
+    "watchPatterns": ["**"]
   },
   "deploy": {
     "startCommand": "uvicorn app:app --host 0.0.0.0 --port $PORT",
