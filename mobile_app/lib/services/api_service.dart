@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = "https://ungroundable-summerly-annamaria.ngrok-free.dev";
+  static const String baseUrl = "https://airesumeanalyzerproject-production.up.railway.app/";
 
   static Future<Map<String, dynamic>> analyzeResume(List<int> bytes, String filename) async {
     try {
