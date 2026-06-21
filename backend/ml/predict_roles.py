@@ -1,26 +1,25 @@
 import joblib
 import os
 
-# 🎯 FIX: Get the exact directory where this file lives (backend/ml/)
+# 🎯 Get the 'backend/ml/' directory path
 ML_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Point directly to the binaries inside the same folder
-MODEL_PATH = os.path.join(ML_DIR, "job_model.pkl")
-VECTORIZER_PATH = os.path.join(ML_DIR, "vectorizer.pkl")
+# 🎯 Go up one level to look directly inside 'backend/' where job_model.pkl lives
+BACKEND_DIR = os.path.dirname(ML_DIR)
+MODEL_PATH = os.path.join(BACKEND_DIR, "job_model.pkl")
 
 def predict_top_3_roles(resume_text: str):
-    if not os.path.exists(MODEL_PATH) or not os.path.exists(VECTORIZER_PATH):
-        return [{"role": "Missing Model or Vectorizer inside ml/ folder", "confidence": 0.0}]
+    # 🚩 Only check for the model file since vectorizer is bundled inside it!
+    if not os.path.exists(MODEL_PATH):
+        return [{"role": "Missing job_model.pkl inside backend folder", "confidence": 0.0}]
     
     try:
         model = joblib.load(MODEL_PATH)
-        vectorizer = joblib.load(VECTORIZER_PATH)
         
-        # Transform the raw resume text array using the correct vectorizer steps
-        vectorized_text = vectorizer.transform([resume_text])
-        
-        probabilities = model.predict_proba(vectorized_text)[0]
+        # ⚡ Since it's a bundled pipeline model, pass the text straight into it!
+        probabilities = model.predict_proba([resume_text])[0]
         classes = model.classes_
+        
         role_probs = sorted(list(zip(classes, probabilities)), key=lambda x: x[1], reverse=True)
 
         return [
