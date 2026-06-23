@@ -9,25 +9,23 @@ def analyze_resume(resume_text: str):
     # ⚡ FAST CLEANING
     cleaned_text = clean_resume_text(resume_text)
     
-    # 🚩 IMMEDIATE VALIDATION
-    professional_keywords = ["education", "experience", "skills", "projects", "summary", "objective", "intern"]
+    # 🚩 STRICT LIVE VALIDATION (Requires multiple sections to look like a real resume)
+    professional_keywords = ["education", "experience", "skills", "projects", "summary", "objective", "intern", "certifications"]
     hits = sum(1 for word in professional_keywords if word in cleaned_text.lower())
     
-    # DEBUG: See what the AI is reading in Render Logs
-    print(f"--- Processing Resume: {len(cleaned_text)} chars, {hits} keywords ---")
+    print(f"--- [RAILWAY LOG] Length: {len(cleaned_text)}, Keyword Hits: {hits}/8 ---")
 
-    if len(cleaned_text) < 150 or hits < 1:
-        return {"error": "provide a valid resume"}
+    # Reject if it doesn't meet stricter resume layout conditions
+    if len(cleaned_text) < 250 or hits < 3:
+        return {"error": "The uploaded file is not a valid resume. Please include standard sections like Education, Experience, and Skills."}
 
     # ⚡ CORE ML COMPONENTS
     resume_skills = extract_skills_from_text(cleaned_text)
     predictions = predict_top_3_roles(cleaned_text)
     
-    # Ensure we have at least one prediction to avoid static fallbacks
     if not predictions:
         predictions = [{"role": "General Developer", "confidence": 50}]
 
-    # Speed Optimization
     predicted_role_names = [p["role"] for p in predictions]
     skills_analysis = skill_gap_analysis(cleaned_text, predicted_role_names)
 
