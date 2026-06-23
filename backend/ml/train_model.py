@@ -1,142 +1,51 @@
 import os
-import pandas as pd
-import joblib
+import sys
 
+# Force Python to look at the 'backend' root directory for custom modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import joblib
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
-from sklearn.metrics import accuracy_score
+from utils.resume_parser import clean_resume_text 
 
-from role_normalizer import normalize_role
+# Point directly to 'dataset.csv' inside your 'ml/' subfolder
+ML_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(ML_DIR, "dataset.csv")
 
-# -----------------------------
-# Load dataset
-# -----------------------------
-print("Loading dataset...")
-df = pd.read_csv("dataset.csv", usecols=["Resume", "Category"])
-df.dropna(inplace=True)
+df = pd.read_csv(DATA_PATH)
 
-# -----------------------------
-# Normalize job roles (🔥 CRITICAL)
-# -----------------------------
-df["Category"] = df["Category"].apply(normalize_role)
-df = df[df["Category"].notna()]
+# 🎯 THE FIX: Target 'Resume' instead of 'Resume_text'
+df['cleaned_resume'] = df['Resume'].apply(clean_resume_text)
 
-# -----------------------------
-# 🔥 HARD ROLE WHITELIST (FINAL)
-# -----------------------------
-GOLD_ROLES = [
-    # Core software
-    "python developer",
-    "java developer",
-    "software engineer",
-    "full stack developer",
-    "frontend developer",
-    "backend developer",
-    "android developer",
-    "ios developer",
+X = df['cleaned_resume']
+y = df['Category']
 
-    # Data & AI
-    "data analyst",
-    "data scientist",
-    "machine learning engineer",
-    "ai engineer",
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Infra
-    "devops engineer",
-    "cloud engineer",
-
-    # IT & Security
-    "database administrator",
-    "system administrator",
-    "network engineer",
-    "security analyst",
-
-    # QA
-    "software tester",
-    "automation tester",
-
-    # Management
-    "project manager",
-    "business analyst",
-    "product manager",
-
-    # Design & Support
-    "ui/ux designer",
-    "technical support engineer"
-]
-
-df = df[df["Category"].isin(GOLD_ROLES)]
-
-# -----------------------------
-# Filter rare job roles
-# -----------------------------
-MIN_SAMPLES_PER_ROLE = 10
-
-role_counts = df["Category"].value_counts()
-valid_roles = role_counts[role_counts >= MIN_SAMPLES_PER_ROLE].index
-df = df[df["Category"].isin(valid_roles)]
-
-print(f"Using {df['Category'].nunique()} canonical job roles")
-
-# -----------------------------
-# Safety cap (laptop friendly)
-# -----------------------------
-MAX_SAMPLES = 50000
-if len(df) > MAX_SAMPLES:
-    df = df.sample(n=MAX_SAMPLES, random_state=42)
-
-# -----------------------------
-# Train-test split
-# -----------------------------
-X_train, X_test, y_train, y_test = train_test_split(
-    df["Resume"],
-    df["Category"],
-    test_size=0.2,
-    random_state=42,
-    stratify=df["Category"]
-)
-
-# -----------------------------
-# Optimized ML pipeline
-# -----------------------------
-pipeline = Pipeline([
-    ("tfidf", TfidfVectorizer(
-        max_features=7000,
-        ngram_range=(1, 1),
-        stop_words="english",
-        min_df=5,
-        max_df=0.9,
-        sublinear_tf=True
-    )),
-    ("clf", LogisticRegression(
-        solver="saga",
-        max_iter=1000,
-        tol=1e-2,
-        C=1.2,
-        class_weight="balanced",
-    ))
+# Building unified Machine Learning Pipeline...
+print("⚡ Building unified Machine Learning Pipeline...")
+model_pipeline = Pipeline([
+    ('vectorizer', TfidfVectorizer(sublinear_tf=True, stop_words='english', max_features=1500)),
+    ('classifier', LogisticRegression(max_iter=1000, C=1.0))
 ])
 
-# -----------------------------
-# Train model
-# -----------------------------
-print("Training model...")
-pipeline.fit(X_train, y_train)
+# Train the entire pipeline at once
+print("🧠 Training model on resume features...")
+model_pipeline.fit(X_train, y_train)
 
-# -----------------------------
-# Evaluate
-# -----------------------------
-y_pred = pipeline.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
-print(f"\nAccuracy: {accuracy * 100:.2f}%")
+# Calculate model accuracy score
+train_acc = model_pipeline.score(X_train, y_train) * 100
+test_acc = model_pipeline.score(X_test, y_test) * 100
+print(f"📊 Training Accuracy: {train_acc:.2f}%")
+print(f"📊 Test Validation Accuracy: {test_acc:.2f}%")
 
-# -----------------------------
-# Save model
-# -----------------------------
-os.makedirs("../backend/model", exist_ok=True)
+# Save under the brand-new distinct filename directly in the root backend folder
+BACKEND_DIR = os.path.dirname(ML_DIR)
+OUTPUT_PATH = os.path.join(BACKEND_DIR, "pipeline_model.pkl")
+joblib.dump(model_pipeline, OUTPUT_PATH)
 
-joblib.dump(pipeline, "../backend/model/job_model.pkl")
-
-print("\n✅ Model trained and saved successfully.")
+print(f"🔥 Successfully saved true trained Pipeline to: {OUTPUT_PATH}")
