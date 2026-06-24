@@ -2,6 +2,7 @@ import joblib
 import os
 import sys
 
+# Ensure cross-folder imports resolve smoothly
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.resume_parser import clean_resume_text
 
@@ -9,24 +10,34 @@ ML_DIR = os.path.dirname(os.path.abspath(__file__))
 BACKEND_DIR = os.path.dirname(ML_DIR)
 MODEL_PATH = os.path.join(BACKEND_DIR, "pipeline_model.pkl")
 
-# 🧠 OPTIMIZATION: Load the model once globally into RAM memory when server boots
+# Keep memory slot empty at bootup
 GLOBAL_MODEL = None
-if os.path.exists(MODEL_PATH):
-    print("🚀 Loading unified ML Pipeline weights into RAM memory...")
-    GLOBAL_MODEL = joblib.load(MODEL_PATH)
+
+def get_model():
+    """
+    Lazy loads the machine learning model.
+    Loads it from disk ONCE only when called, then caches it in RAM.
+    """
+    global GLOBAL_MODEL
+    if GLOBAL_MODEL is None:
+        if os.path.exists(MODEL_PATH):
+            print("🧠 [LAZY LOAD] Loading pipeline binary asset into RAM...")
+            GLOBAL_MODEL = joblib.load(MODEL_PATH)
+        else:
+            print("❌ [LAZY LOAD] Core pipeline binary file not found!")
+    return GLOBAL_MODEL
 
 def predict_top_3_roles(resume_text: str):
-    # If the model didn't load during bootup, handle the fallback safely
-    if GLOBAL_MODEL is None:
-        print("⚠️ MODEL RE-LOAD TRIGGERED: Fallback state activated.")
+    # Fetch the cached or newly loaded model instance
+    model = get_model()
+    
+    if model is None:
         return [{"role": "web_development", "confidence": 50.0}]
     
     try:
         cleaned = clean_resume_text(resume_text)
-        
-        # Fast extraction using memory references instead of disk lookups!
-        probabilities = GLOBAL_MODEL.predict_proba([cleaned])[0]
-        classes = GLOBAL_MODEL.classes_
+        probabilities = model.predict_proba([cleaned])[0]
+        classes = model.classes_
         
         role_probs = sorted(list(zip(classes, probabilities)), key=lambda x: x[1], reverse=True)
 
@@ -37,7 +48,7 @@ def predict_top_3_roles(resume_text: str):
             "Mobile App Developer": "mobile_development",
             "Data Scientist / AI Engineer": "data_science",
             "Data Science": "data_science",
-            "Database Administrator": "database_administration"
+            "Database Administrator": "database_administrator"
         }
 
         transformed_roles = []
