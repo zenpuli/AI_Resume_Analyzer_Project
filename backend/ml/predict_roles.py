@@ -2,29 +2,34 @@ import joblib
 import os
 import sys
 
-# Make sure Python can safely resolve cross-folder imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.resume_parser import clean_resume_text
 
-# Map paths to the backend directory
 ML_DIR = os.path.dirname(os.path.abspath(__file__))
 BACKEND_DIR = os.path.dirname(ML_DIR)
 MODEL_PATH = os.path.join(BACKEND_DIR, "pipeline_model.pkl")
 
+# 🧠 OPTIMIZATION: Load the model once globally into RAM memory when server boots
+GLOBAL_MODEL = None
+if os.path.exists(MODEL_PATH):
+    print("🚀 Loading unified ML Pipeline weights into RAM memory...")
+    GLOBAL_MODEL = joblib.load(MODEL_PATH)
+
 def predict_top_3_roles(resume_text: str):
-    if not os.path.exists(MODEL_PATH):
+    # If the model didn't load during bootup, handle the fallback safely
+    if GLOBAL_MODEL is None:
+        print("⚠️ MODEL RE-LOAD TRIGGERED: Fallback state activated.")
         return [{"role": "web_development", "confidence": 50.0}]
     
     try:
-        model = joblib.load(MODEL_PATH)
         cleaned = clean_resume_text(resume_text)
         
-        probabilities = model.predict_proba([cleaned])[0]
-        classes = model.classes_
+        # Fast extraction using memory references instead of disk lookups!
+        probabilities = GLOBAL_MODEL.predict_proba([cleaned])[0]
+        classes = GLOBAL_MODEL.classes_
         
         role_probs = sorted(list(zip(classes, probabilities)), key=lambda x: x[1], reverse=True)
 
-        # 🎯 CATEGORY TRANSFORMATION MAP (Matches your exact job_skills.json keys)
         category_map = {
             "Python Backend Engineer": "web_development",
             "Full Stack Developer": "web_development",
