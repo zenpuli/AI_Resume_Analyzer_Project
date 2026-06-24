@@ -1,5 +1,10 @@
 import joblib
 import os
+import sys
+
+# 🎯 Make sure Python can safely resolve cross-folder imports
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.resume_parser import clean_resume_text
 
 # Map paths to the backend directory
 ML_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -8,17 +13,21 @@ MODEL_PATH = os.path.join(BACKEND_DIR, "pipeline_model.pkl")
 
 def predict_top_3_roles(resume_text: str):
     if not os.path.exists(MODEL_PATH):
-        return [{"role": "web_development", "confidence": 50.0}] # Safe backend string fallback
+        print("⚠️ MODEL NOT FOUND: Using safe backend key fallback.")
+        return [{"role": "web_development", "confidence": 50.0}]
     
     try:
         model = joblib.load(MODEL_PATH)
-        probabilities = model.predict_proba([resume_text])[0]
+        
+        # 🎯 THE CRITICAL FIX: Clean the raw input text first so it matches your dataset vocabulary!
+        cleaned = clean_resume_text(resume_text)
+        
+        probabilities = model.predict_proba([cleaned])[0]
         classes = model.classes_
         
         role_probs = sorted(list(zip(classes, probabilities)), key=lambda x: x[1], reverse=True)
 
         # 🎯 CATEGORY TRANSFORMATION MAP
-        # Maps your raw dataset labels directly to your exact job_skills.json dictionary keys!
         category_map = {
             "Python Backend Engineer": "web_development",
             "Full Stack Developer": "web_development",
@@ -41,5 +50,4 @@ def predict_top_3_roles(resume_text: str):
         return transformed_roles
     except Exception as e:
         print(f"💥 MODEL PIPELINE CRASH: {str(e)}")
-        # Default back to a valid json dictionary key string if model breaks
         return [{"role": "web_development", "confidence": 75.0}]
