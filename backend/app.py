@@ -17,6 +17,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 🧠 AUTOMATIC LIVE PRODUCTION TRAINING HOOK
+# This catches version mismatches at server boot and compiles the weights using the server's native env!
+try:
+    from ml.predict_roles import MODEL_PATH
+    
+    if not os.path.exists(MODEL_PATH):
+        print("🤖 [PRODUCTION BOOT] Model file missing. Launching live training pipeline...")
+        from ml.train_model import run_model_training_pipeline
+        run_model_training_pipeline()
+    else:
+        import joblib
+        try:
+            # Test loading the local pkl file
+            joblib.load(MODEL_PATH)
+            print("✅ [PRODUCTION BOOT] Saved model binary verified and matching env perfectly.")
+        except Exception:
+            print("⚠️ [PRODUCTION BOOT] Version mismatch detected. Re-building model matrix locally...")
+            from ml.train_model import run_model_training_pipeline
+            run_model_training_pipeline()
+except Exception as train_boot_err:
+    print(f"❌ Automation boot training failed: {str(train_boot_err)}")
+
+
 @app.get("/")
 def root():
     return {
@@ -43,7 +66,6 @@ async def upload_resume(file: UploadFile = File(...)):
         try:
             analysis_results = analyze_resume(resume_text)
             
-            # If the parser returned a structural error message block, return it clearly
             if isinstance(analysis_results, dict) and "error" in analysis_results:
                 return analysis_results
                 
@@ -51,10 +73,8 @@ async def upload_resume(file: UploadFile = File(...)):
             
         except Exception as ml_err:
             print("🚨 --- INTERNAL ML PIPELINE CRASH DETECTED --- 🚨")
-            traceback.print_exc() # This prints the exact line/file breaking your backend!
+            traceback.print_exc() 
             
-            # 🔥 CRITICAL FIX: Instead of returning a crashing error string, return a valid system schema 
-            # so your React/Flutter frontend app renders perfectly no matter what!
             return {
                 "resume_skills": ["python", "java", "javascript", "flutter", "git", "html", "css"],
                 "top_3_roles": [
