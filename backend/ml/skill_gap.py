@@ -1,5 +1,4 @@
 from utils.skill_extractor import extract_skills_from_text
-from utils.job_skill_loader import get_skills_for_role
 import json
 import os
 
@@ -10,7 +9,7 @@ JSON_PATH = os.path.join(BACKEND_DIR, "job_skills.json")
 
 def skill_gap_analysis(resume_text: str, predicted_roles: list):
     """
-    Accepts raw resume text and an array of predicted role dictionaries.
+    Accepts raw resume text and an array of predicted role items (strings or dicts).
     Extracts nested sub-skills from job_skills.json fields safely.
     """
     resume_skills = set(extract_skills_from_text(resume_text))
@@ -18,14 +17,26 @@ def skill_gap_analysis(resume_text: str, predicted_roles: list):
 
     # Load nested file values locally to prevent lookup miss traps
     if not os.path.exists(JSON_PATH):
+        print(f"❌ ERROR: job_skills.json not found at {JSON_PATH}")
         return report
         
     with open(JSON_PATH, "r", encoding="utf-8") as f:
         skills_data = json.load(f).get("domains", {})
 
     for role_item in predicted_roles:
-        # Extract the dictionary role string element safely
-        role_key = role_item.get("role", "").lower()
+        # 🎯 BULLETPROOF RESOLUTION: Handle both plain strings and formatted dictionaries gracefully
+        if isinstance(role_item, dict):
+            role_key = role_item.get("role", "").lower()
+        else:
+            role_key = str(role_item).lower()
+            
+        # Standardize common predictive variations to match JSON keys
+        if "backend" in role_key or "frontend" in role_key or "full stack" in role_key:
+            role_key = "web_development"
+        elif "android" in role_key or "flutter" in role_key:
+            role_key = "mobile_development"
+        elif "data scientist" in role_key or "ai engineer" in role_key:
+            role_key = "data_science"
         
         # Pull flat skill items out of nested sub-roles (frontend, backend, etc.)
         required_skills = []
