@@ -1,14 +1,26 @@
 import joblib
 import os
 import sys
+import re
 
+# Ensure cross-folder imports resolve smoothly
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Safely import the cleaner, use a basic backup if it fails
+# Robust regex-based fallback cleaner to prevent vectorizer feature token errors
+def simple_clean_text(text):
+    text = str(text).lower()
+    text = re.sub(r'http\S+\s*', ' ', text)  # Remove URLs
+    text = re.sub(r'RT|cc', ' ', text)      # Remove RT/cc tags
+    text = re.sub(r'#\S+', ' ', text)       # Remove hashtags
+    text = re.sub(r'@\S+', ' ', text)       # Remove mentions
+    text = re.sub(r'[^\w\s]', ' ', text)    # Remove punctuation
+    text = re.sub(r'\s+', ' ', text).strip() # Remove extra whitespace
+    return text
+
 try:
     from utils.resume_parser import clean_resume_text
 except ImportError:
-    def clean_resume_text(text): return str(text).lower()
+    clean_resume_text = simple_clean_text
 
 ML_DIR = os.path.dirname(os.path.abspath(__file__))
 BACKEND_DIR = os.path.dirname(ML_DIR)
@@ -35,7 +47,6 @@ def predict_top_3_roles(resume_text: str):
     Predicts the top 3 job categories safely. 
     Guarantees a clean dictionary return even if text cleaning or matrix transformations fail.
     """
-    # Fallback response structure matching your exact job_skills.json schema keys
     fallback_response = [
         {"role": "web_development", "confidence": 70.0},
         {"role": "mobile_development", "confidence": 50.0},
@@ -47,11 +58,14 @@ def predict_top_3_roles(resume_text: str):
         if model is None:
             return fallback_response
 
-        # 🎯 CRITICAL BUG RESILIENCY: Force string conversion to prevent text property processing errors
         safe_text = str(resume_text) if resume_text else ""
-        cleaned = clean_resume_text(safe_text)
         
-        # If text processing emptied out the characters, use fallback
+        # Try custom cleaner first; fall back to simple cleaner if it throws an error
+        try:
+            cleaned = clean_resume_text(safe_text)
+        except Exception:
+            cleaned = simple_clean_text(safe_text)
+        
         if not cleaned.strip():
             return fallback_response
 
