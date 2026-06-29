@@ -23,13 +23,16 @@ def analyze_resume(resume_text: str):
 
     # ⚡ CORE ML COMPONENTS
     resume_skills = extract_skills_from_text(cleaned_text)
+    
+    # Fetch real predictions array matrix
     predictions = predict_top_3_roles(cleaned_text)
     
-    # 🎯 BUG FIX: Fallback values must use keys matching your job_skills.json schema keys exactly!
-    is_model_error = not predictions or "Model Error" in predictions[0]["role"] or "web_development" not in [p["role"] for p in predictions if "role" in p] and len(predictions) == 1
+    # 🎯 THE CRITICAL BUG FIX: Check if an actual error dictionary was returned, 
+    # instead of string matching the role names keys!
+    is_model_error = not predictions or (isinstance(predictions, dict) and "error" in predictions)
     
     if is_model_error:
-        print("⚠️ MODEL FALLBACK TRIGGERED: Using dynamic pipeline backup for skills matching engine.")
+        print("⚠️ MODEL FALLBACK TRIGGERED: Using dynamic pipeline backup values.")
         ui_predictions = [
             {"role": "web_development", "confidence": 85.0},
             {"role": "mobile_development", "confidence": 65.0},
@@ -39,7 +42,6 @@ def analyze_resume(resume_text: str):
         ui_predictions = predictions
 
     # 📊 EXECUTE DATA ANALYSIS DEPENDENCIES
-    # Pass the unified dictionary list straight into the analyzer engine!
     skills_analysis = skill_gap_analysis(cleaned_text, ui_predictions)
     scores = compute_scores(cleaned_text, skills_analysis)
     recommendations = generate_recommendations(skills_analysis, cleaned_text)
