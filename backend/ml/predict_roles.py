@@ -66,6 +66,7 @@ def predict_top_3_roles(resume_text: str):
 
         safe_text = str(resume_text) if resume_text else ""
         
+        # Try custom cleaner first; fall back to simple cleaner if it throws an error
         try:
             cleaned = clean_resume_text(safe_text)
         except Exception:
@@ -97,6 +98,8 @@ def predict_top_3_roles(resume_text: str):
                 "confidence": round(float(conf * 100), 2)
             })
 
+        # 🔥 THE ULTIMATE PROOF PRINT: Outputs to Railway terminal during upload
+        print(f"🔥 [SUCCESS] LIVE ESTIMATOR EVALUATED MATRIX: {transformed_roles}")
         return transformed_roles if transformed_roles else fallback_response
 
     except Exception as e:
