@@ -43,7 +43,7 @@ def get_model():
                     print("🧠 [LAZY LOAD SUCCESS] True model weights mounted to memory.")
             except Exception as e:
                 print(f"❌ Error unpacking model binary pickle: {str(e)}")
-                GLOBAL_MODEL = None  # Clear memory reference so it can attempt loading a clean file next time
+                GLOBAL_MODEL = None  # Clear memory reference so it can retry cleanly next time
         else:
             print("❌ Pipeline binary file asset not found at target path!")
     return GLOBAL_MODEL
@@ -80,19 +80,23 @@ def predict_top_3_roles(resume_text: str):
         
         role_probs = sorted(list(zip(classes, probabilities)), key=lambda x: x[1], reverse=True)
 
+        # 🎯 STANDARD LOWERCASE PRODUCTION KEY MAP (Guarantees case-insensitive parsing hits)
         category_map = {
-            "Python Backend Engineer": "web_development",
-            "Full Stack Developer": "web_development",
-            "Web Development": "web_development",
-            "Mobile App Developer": "mobile_development",
-            "Data Scientist / AI Engineer": "data_science",
-            "Data Science": "data_science",
-            "Database Administrator": "database_administration"
+            "python backend engineer": "web_development",
+            "full stack developer": "web_development",
+            "web development": "web_development",
+            "mobile app developer": "mobile_development",
+            "data scientist / ai engineer": "data_science",
+            "data science": "data_science",
+            "database administrator": "database_administration"
         }
 
         transformed_roles = []
         for role, conf in role_probs[:3]:
-            json_key = category_map.get(str(role), str(role).lower().replace(" ", "_"))
+            # Convert raw class output to standard matching format
+            role_str = str(role).lower().strip()
+            json_key = category_map.get(role_str, role_str.replace(" ", "_"))
+            
             transformed_roles.append({
                 "role": json_key, 
                 "confidence": round(float(conf * 100), 2)
