@@ -98,7 +98,7 @@ def predict_top_3_roles(resume_text: str):
                 "confidence": round(float(conf * 100), 2)
             })
 
-        # 🔥 THE ULTIMATE PROOF PRINT: Outputs to Railway terminal during upload
+        # 🔥 THE ULTIMATE PROOF PRINT: Outputs directly to the Railway console during upload
         print(f"🔥 [SUCCESS] LIVE ESTIMATOR EVALUATED MATRIX: {transformed_roles}")
         return transformed_roles if transformed_roles else fallback_response
 
