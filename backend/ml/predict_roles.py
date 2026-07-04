@@ -29,15 +29,21 @@ MODEL_PATH = os.path.join(BACKEND_DIR, "pipeline_model.pkl")
 GLOBAL_MODEL = None
 
 def get_model():
-    """Lazy loads the ML model matrix safely into memory slot."""
+    """
+    Lazy loads the ML model matrix safely into memory slot.
+    Resets pointer state cleanly if a file unpickling fault occurs.
+    """
     global GLOBAL_MODEL
     if GLOBAL_MODEL is None:
         if os.path.exists(MODEL_PATH):
             try:
-                GLOBAL_MODEL = joblib.load(MODEL_PATH)
-                print("🧠 [LAZY LOAD SUCCESS] Model loaded smoothly into RAM.")
+                # Force verification that the file size is valid before loading
+                if os.path.getsize(MODEL_PATH) > 1000:
+                    GLOBAL_MODEL = joblib.load(MODEL_PATH)
+                    print("🧠 [LAZY LOAD SUCCESS] True model weights mounted to memory.")
             except Exception as e:
                 print(f"❌ Error unpacking model binary pickle: {str(e)}")
+                GLOBAL_MODEL = None  # Clear memory reference so it can attempt loading a clean file next time
         else:
             print("❌ Pipeline binary file asset not found at target path!")
     return GLOBAL_MODEL
@@ -60,7 +66,6 @@ def predict_top_3_roles(resume_text: str):
 
         safe_text = str(resume_text) if resume_text else ""
         
-        # Try custom cleaner first; fall back to simple cleaner if it throws an error
         try:
             cleaned = clean_resume_text(safe_text)
         except Exception:
