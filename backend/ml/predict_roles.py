@@ -2,6 +2,7 @@ import joblib
 import os
 import sys
 import re
+import traceback
 
 # Ensure cross-folder imports resolve smoothly
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -107,5 +108,7 @@ def predict_top_3_roles(resume_text: str):
         return transformed_roles if transformed_roles else fallback_response
 
     except Exception as e:
-        print(f"💥 INTERCEPTED PIPELINE EXCEPTION: {str(e)}")
+        # 🔥 THE CRITICAL TRACEBACK LOG FIX: Exposes the internal scikit-learn crash reason!
+        print("💥 --- CORE PREDICT PROBA PIPELINE CRASH --- 💥")
+        traceback.print_exc()
         return fallback_response
