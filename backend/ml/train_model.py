@@ -10,7 +10,23 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
-from utils.resume_parser import clean_resume_text 
+
+# Dynamic fallback text cleaner to guarantee compilation safety during standalone execution
+def simple_clean_text(text):
+    import re
+    text = str(text).lower()
+    text = re.sub(r'http\S+\s*', ' ', text)
+    text = re.sub(r'RT|cc', ' ', text)
+    text = re.sub(r'#\S+', ' ', text)
+    text = re.sub(r'@\S+', ' ', text)
+    text = re.sub(r'[^\w\s]', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    return text
+
+try:
+    from utils.resume_parser import clean_resume_text 
+except ImportError:
+    clean_resume_text = simple_clean_text
 
 # Point directly to 'dataset.csv' inside your 'ml/' subfolder
 ML_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -54,8 +70,15 @@ def run_model_training_pipeline():
     # Save under the brand-new distinct filename directly in the root backend folder
     BACKEND_DIR = os.path.dirname(ML_DIR)
     OUTPUT_PATH = os.path.join(BACKEND_DIR, "pipeline_model.pkl")
+    
+    # Force delete an old binary if it exists to clear locked system frames
+    if os.path.exists(OUTPUT_PATH):
+        try:
+            os.remove(OUTPUT_PATH)
+        except:
+            pass
+            
     joblib.dump(model_pipeline, OUTPUT_PATH)
-
     print(f"🔥 Successfully saved true trained Pipeline to: {OUTPUT_PATH}")
 
 if __name__ == "__main__":
