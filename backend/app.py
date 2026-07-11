@@ -9,17 +9,17 @@ from utils.resume_parser import extract_text_from_resume
 
 app = FastAPI(title="AI Resume Analyzer")
 
-# 🌐 Robust CORS Configuration - Prevents Frontend "Backend connection failed" locks
+# 🌐 Production CORS Override Layer - Prevents Preflight Connection Drops
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
-    allow_credentials=True,
+    allow_credentials=False,  # Must be False when origin is wild-carded ["*"] to pass browser security checks
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # 🧠 AUTOMATIC LIVE PRODUCTION TRAINING HOOK
-# Catches version mismatches at server boot and compiles the weights using the server's native env!
 try:
     from ml.predict_roles import MODEL_PATH
     
@@ -30,7 +30,6 @@ try:
     else:
         import joblib
         try:
-            # Test loading the local pkl file
             joblib.load(MODEL_PATH)
             print("✅ [PRODUCTION BOOT] Saved model binary verified and matching env perfectly.")
         except Exception:
@@ -99,12 +98,8 @@ async def upload_resume(file: UploadFile = File(...)):
             except:
                 pass
 
-# ⚡ DYNAMIC PRODUCTION PORT BINDING ENGINE FOR RENDER
 if __name__ == "__main__":
     import uvicorn
-    
-    # Extract the dynamic port provided by Render's environment, fallback to 8080 locally
     port = int(os.environ.get("PORT", 8080))
-    
     print(f"🚀 [PRODUCTION START] Binding server engine to host 0.0.0.0 on port {port}...")
     uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
