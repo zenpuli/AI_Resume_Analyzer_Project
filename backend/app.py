@@ -97,3 +97,13 @@ async def upload_resume(file: UploadFile = File(...)):
                 os.remove(temp_path)
             except:
                 pass
+
+# ⚡ DYNAMIC PRODUCTION PORT BINDING ENGINE FOR RENDER
+if __name__ == "__main__":
+    import uvicorn
+    
+    # Extract the dynamic port provided by Render's environment, fallback to 8080 locally
+    port = int(os.environ.get("PORT", 8080))
+    
+    print(f"🚀 [PRODUCTION START] Binding server engine to host 0.0.0.0 on port {port}...")
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
