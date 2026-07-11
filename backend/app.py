@@ -9,6 +9,7 @@ from utils.resume_parser import extract_text_from_resume
 
 app = FastAPI(title="AI Resume Analyzer")
 
+# 🌐 Robust CORS Configuration - Prevents Frontend "Backend connection failed" locks
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -18,7 +19,7 @@ app.add_middleware(
 )
 
 # 🧠 AUTOMATIC LIVE PRODUCTION TRAINING HOOK
-# This catches version mismatches at server boot and compiles the weights using the server's native env!
+# Catches version mismatches at server boot and compiles the weights using the server's native env!
 try:
     from ml.predict_roles import MODEL_PATH
     
