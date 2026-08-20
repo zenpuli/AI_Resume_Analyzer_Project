@@ -1,13 +1,17 @@
-# ML datasets
-ml/*.csv
+# Virtual Environments
+backend/venv/
+venv/
+ENV/
+env/
 
-# Trained models
-backend/model/*.pkl
+# Firebase & Flutter Build Caches
+mobile_app/.firebase/
+mobile_app/.dart_tool/
+mobile_app/build/
 
-# Python cache
-__pycache__/
+# Operating System & IDE Files
+.DS_Store
 *.pyc
-
-# Environment
-.env
-.venv/
+__pycache__/
+.vscode/
+.idea/
